@@ -19,6 +19,12 @@ pkg_search_module(BLUEZ REQUIRED bluez)
 
 message("Build DBus gattlib for Bluez v${BLUEZ_VERSION_MAJOR}.${BLUEZ_VERSION_MINOR}")
 
+set(GATTLIB_BUILD_EXAMPLES OFF)
+set(GATTLIB_SHARED_LIB OFF)
+set(GATTLIB_BUILD_DOCS OFF)
+set(GATTLIB_PYTHON_INTERFACE OFF)
+set(GATTLIB_LOG_BACKEND printf) # printf or syslog
+
 if (BLUEZ_VERSION_MINOR LESS 40)
 	set(DBUS_BLUEZ_API dbus-bluez-pre-v5.40)
 elseif (BLUEZ_VERSION_MINOR LESS 48)
@@ -85,7 +91,23 @@ if (BLUEZ_VERSION_MINOR GREATER 40)
 	list(APPEND gattlib_SRCS ${CMAKE_CURRENT_BINARY_DIR}/org-bluez-battery1.c)
 endif()
 
-set(gattlib_LIBS ${GLIB_LDFLAGS} ${GIO_UNIX_LDFLAGS})
+# set(gattlib_LIBS ${GLIB_LDFLAGS} ${GIO_UNIX_LDFLAGS})
+set(gattlib_LIBS
+	${CMAKE_CURRENT_LIST_DIR}/../../../../arm64/libgio-2.0.so.0.6600.8
+	${CMAKE_CURRENT_LIST_DIR}/../../../../arm64/libglib-2.0.so.0.6600.8
+	${CMAKE_CURRENT_LIST_DIR}/../../../../arm64/libgobject-2.0.so.0.6600.8
+	${CMAKE_CURRENT_LIST_DIR}/../../../../arm64/libgmodule-2.0.so.0.6600.8
+	${CMAKE_CURRENT_LIST_DIR}/../../../../arm64/libz.so.1.2.11
+	${CMAKE_CURRENT_LIST_DIR}/../../../../arm64/libmount.so.1.1.0
+	${CMAKE_CURRENT_LIST_DIR}/../../../../arm64/libselinux.so.1
+	${CMAKE_CURRENT_LIST_DIR}/../../../../arm64/libpcre2-8.so.0.10.1
+	${CMAKE_CURRENT_LIST_DIR}/../../../../arm64/libpcre.so.3.13.3
+	${CMAKE_CURRENT_LIST_DIR}/../../../../arm64/libffi.so.7.1.0
+	${CMAKE_CURRENT_LIST_DIR}/../../../../arm64/libblkid.so.1.1.0
+)
+
+message(STATUS ${GLIB_LDFLAGS})
+message(STATUS ${GIO_UNIX_LDFLAGS})
 
 #
 # Add Python Support
